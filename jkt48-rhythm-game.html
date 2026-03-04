@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JKT48 Rhythm – Putri Duyung yang Sedang Bersedih</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Tokyo+Zoo&family=M+PLUS+Rounded+1c:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
+
+  :root {
+    --teal: #00e5c8;
+    --pink: #ff4fa3;
+    --gold: #ffd700;
+    --deep: #030d1a;
+    --mid: #071a33;
+    --bubble: rgba(0,229,200,0.15);
+    --lane-w: 140px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--deep);
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    cursor: none;
+  }
+
+  /* ── OCEAN BG ── */
+  #ocean-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 50% 0%, #003d6b 0%, #011a35 50%, #030d1a 100%);
+    overflow: hidden;
+  }
+  .wave {
+    position: absolute; bottom: 0; width: 200%; height: 160px;
+    border-radius: 100% 100% 0 0;
+    animation: wave-drift linear infinite;
+  }
+  .wave1 { background: rgba(0,229,200,0.07); animation-duration: 8s; bottom: -20px; }
+  .wave2 { background: rgba(0,100,200,0.08); animation-duration: 11s; animation-delay: -3s; bottom: -40px; }
+  .wave3 { background: rgba(255,79,163,0.05); animation-duration: 14s; animation-delay: -6s; bottom: -60px; }
+  @keyframes wave-drift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* bubbles */
+  .bub {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(0,229,200,0.4);
+    background: rgba(0,229,200,0.05);
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) scale(1); opacity: .6; }
+    100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
+  }
+
+  /* fish */
+  .fish {
+    position: absolute; font-size: 28px;
+    animation: swim linear infinite;
+    filter: drop-shadow(0 0 6px var(--teal));
+  }
+  @keyframes swim {
+    0%   { transform: translateX(-80px) scaleX(1); }
+    49%  { transform: translateX(110vw) scaleX(1); }
+    50%  { transform: translateX(110vw) scaleX(-1); }
+    99%  { transform: translateX(-80px) scaleX(-1); }
+    100% { transform: translateX(-80px) scaleX(1); }
+  }
+
+  /* stars/sparkles */
+  .spark {
+    position: absolute; width:4px; height:4px; border-radius:50%;
+    background: var(--teal);
+    animation: twinkle ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity:.2; transform:scale(.8); }
+    to   { opacity:1; transform:scale(1.4); }
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity .5s;
+  }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+
+  /* ── TITLE SCREEN ── */
+  #title-screen {
+    gap: 18px;
+    background: radial-gradient(ellipse at 50% 40%, rgba(0,60,100,.6) 0%, transparent 70%);
+  }
+  .mermaid-deco {
+    font-size: 80px; animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px var(--pink)) drop-shadow(0 0 40px var(--teal));
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-18px) rotate(3deg); }
+  }
+  .game-title {
+    font-family: 'Zen Tokyo Zoo', cursive;
+    font-size: clamp(22px,4vw,46px);
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 0 20px var(--teal), 0 0 50px var(--pink);
+    letter-spacing: 2px;
+    line-height: 1.3;
+  }
+  .game-subtitle {
+    font-size: 14px; color: var(--teal); letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .keys-hint {
+    display: flex; gap: 28px; margin-top: 10px;
+  }
+  .key-badge {
+    width: 72px; height: 72px;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(0,229,200,.08);
+    backdrop-filter: blur(6px);
+    font-size: 30px; font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 10px var(--teal);
+    box-shadow: 0 0 18px rgba(0,229,200,.3), inset 0 0 12px rgba(0,229,200,.05);
+    transition: transform .1s;
+  }
+  .key-badge span { font-size: 10px; color: var(--teal); margin-top: 2px; }
+
+  .btn-start {
+    margin-top: 14px;
+    padding: 16px 56px;
+    background: linear-gradient(135deg, var(--pink), #ff8ad4);
+    border: none; border-radius: 50px;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-size: 20px; font-weight: 900;
+    color: #fff; cursor: pointer;
+    box-shadow: 0 0 30px rgba(255,79,163,.6), 0 4px 20px rgba(0,0,0,.4);
+    letter-spacing: 2px;
+    transition: transform .1s, box-shadow .1s;
+    animation: pulse-btn 2s ease-in-out infinite;
+  }
+  .btn-start:hover { transform: scale(1.06); }
+  @keyframes pulse-btn {
+    0%,100% { box-shadow: 0 0 30px rgba(255,79,163,.6); }
+    50%      { box-shadow: 0 0 50px rgba(255,79,163,.9), 0 0 80px rgba(255,79,163,.3); }
+  }
+
+  /* ── GAME SCREEN ── */
+  #game-screen { z-index: 5; }
+
+  /* HUD top */
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 24px;
+    background: linear-gradient(180deg, rgba(3,13,26,.9) 0%, transparent 100%);
+  }
+  .hud-block { text-align: center; }
+  .hud-label { font-size: 10px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; }
+  .hud-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px; font-weight: 900; color: #fff;
+    text-shadow: 0 0 12px var(--teal);
+  }
+  .hud-combo { color: var(--gold); text-shadow: 0 0 12px var(--gold); }
+
+  /* health bar */
+  #health-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    height: 6px; background: rgba(255,255,255,.1);
+  }
+  #health-bar {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--pink));
+    transition: width .3s, background .3s;
+    box-shadow: 0 0 10px var(--teal);
+  }
+
+  /* SONG INFO */
+  #song-info {
+    position: fixed; top: 68px; left: 0; right: 0; z-index: 20;
+    text-align: center;
+    font-size: 12px; color: rgba(255,255,255,.4);
+    letter-spacing: 1px;
+  }
+
+  /* LANES */
+  #lanes-wrap {
+    position: fixed;
+    left: 50%; top: 0; bottom: 0;
+    transform: translateX(-50%);
+    width: calc(var(--lane-w) * 2 + 20px);
+    z-index: 6;
+    display: flex; gap: 20px;
+    pointer-events: none;
+  }
+  .lane {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(180deg,
+      rgba(0,229,200,0.0) 0%,
+      rgba(0,229,200,0.03) 60%,
+      rgba(0,229,200,0.08) 100%
+    );
+    border-left: 1px solid rgba(0,229,200,.1);
+    border-right: 1px solid rgba(0,229,200,.1);
+  }
+  /* scanlines */
+  .lane::before {
+    content:''; position:absolute; inset:0;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 39px,
+      rgba(0,229,200,.03) 40px
+    );
+  }
+
+  /* Hit zone */
+  .hit-zone {
+    position: absolute; bottom: 80px;
+    left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hit-ring {
+    width: 90px; height: 90px; border-radius: 50%;
+    border: 3px solid rgba(0,229,200,.4);
+    background: rgba(0,229,200,.05);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px; font-weight: 900;
+    color: rgba(255,255,255,.6);
+    transition: all .07s;
+    box-shadow: 0 0 20px rgba(0,229,200,.2);
+  }
+  .hit-ring.active-z {
+    background: rgba(0,229,200,.3);
+    border-color: var(--teal);
+    color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 40px var(--teal), inset 0 0 20px rgba(0,229,200,.3);
+  }
+  .hit-ring.active-x {
+    background: rgba(255,79,163,.3);
+    border-color: var(--pink);
+    color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 40px var(--pink), inset 0 0 20px rgba(255,79,163,.3);
+  }
+
+  /* NOTES */
+  .note {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    width: 80px; height: 28px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 0 18px currentColor;
+  }
+  .note-z {
+    background: linear-gradient(135deg, rgba(0,229,200,.9), rgba(0,180,160,.9));
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.4);
+    text-shadow: 0 0 8px rgba(0,0,0,.5);
+  }
+  .note-x {
+    background: linear-gradient(135deg, rgba(255,79,163,.9), rgba(200,50,130,.9));
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.4);
+    text-shadow: 0 0 8px rgba(0,0,0,.5);
+  }
+
+  /* LONG notes */
+  .note-long {
+    border-radius: 14px 14px 4px 4px;
+  }
+  .note-tail {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    width: 24px;
+    border-radius: 0 0 6px 6px;
+  }
+  .note-tail-z { background: linear-gradient(180deg, rgba(0,229,200,.5), transparent); }
+  .note-tail-x { background: linear-gradient(180deg, rgba(255,79,163,.5), transparent); }
+
+  /* JUDGMENT */
+  #judgment {
+    position: fixed;
+    left: 50%; top: 45%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px; font-weight: 900;
+    pointer-events: none; z-index: 30;
+    opacity: 0; transition: none;
+    text-shadow: 0 0 20px currentColor;
+  }
+  .judge-perfect { color: var(--gold); text-shadow: 0 0 20px var(--gold), 0 0 40px rgba(255,215,0,.5); }
+  .judge-great   { color: var(--teal); text-shadow: 0 0 20px var(--teal); }
+  .judge-good    { color: #88ff88;     text-shadow: 0 0 15px #88ff88; }
+  .judge-miss    { color: #ff4444;     text-shadow: 0 0 15px #ff4444; }
+
+  /* chant text */
+  #chant-display {
+    position: fixed; bottom: 110px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    font-size: 22px; font-weight: 900;
+    color: rgba(255,255,255,.8);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    pointer-events: none;
+    text-align: center;
+    min-width: 300px;
+    text-shadow: 0 0 15px var(--teal);
+    opacity: 0;
+    transition: opacity .1s;
+  }
+
+  /* PARTICLES */
+  .particle {
+    position: fixed; pointer-events: none; z-index: 40;
+    border-radius: 50%;
+    animation: particle-fly .6s ease-out forwards;
+  }
+  @keyframes particle-fly {
+    0%   { opacity:1; transform: translate(0,0) scale(1); }
+    100% { opacity:0; transform: translate(var(--dx),var(--dy)) scale(0); }
+  }
+
+  /* ── RESULT SCREEN ── */
+  #result-screen {
+    gap: 16px;
+    background: radial-gradient(ellipse at 50% 40%, rgba(0,60,100,.7) 0%, transparent 70%);
+  }
+  .result-title {
+    font-family: 'Zen Tokyo Zoo', cursive;
+    font-size: 52px; color: var(--gold);
+    text-shadow: 0 0 30px var(--gold);
+    animation: float 3s ease-in-out infinite;
+  }
+  .result-table {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(0,229,200,.2);
+    border-radius: 16px;
+    padding: 24px 40px;
+    text-align: center;
+  }
+  .result-row { display: flex; gap: 40px; justify-content: center; margin: 8px 0; }
+  .result-item { text-align: center; }
+  .result-item .lbl { font-size: 11px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; }
+  .result-item .val { font-family:'Orbitron',sans-serif; font-size:26px; font-weight:900; color:#fff; }
+  .rank-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 80px; font-weight: 900;
+    text-shadow: 0 0 40px currentColor;
+  }
+  .rank-S { color: var(--gold); }
+  .rank-A { color: var(--teal); }
+  .rank-B { color: #88ff88; }
+  .rank-C { color: #ffaa00; }
+  .rank-D { color: #ff4444; }
+
+  /* PAUSE overlay */
+  #pause-overlay {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(3,13,26,.85);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s;
+    backdrop-filter: blur(6px);
+  }
+  #pause-overlay.visible { opacity:1; pointer-events: all; }
+  .pause-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px; color: #fff;
+    text-shadow: 0 0 20px var(--teal);
+  }
+
+  /* youtube hidden */
+  #yt-player { position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; }
+
+  /* countdown */
+  #countdown {
+    position: fixed; inset:0; z-index:45;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+  #countdown-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 120px; font-weight: 900;
+    color: var(--teal);
+    text-shadow: 0 0 40px var(--teal), 0 0 80px rgba(0,229,200,.5);
+    opacity: 0;
+  }
+
+  /* progress bar */
+  #progress-bar {
+    position: fixed; top: 60px; left: 0; right: 0; z-index: 20;
+    height: 3px; background: rgba(255,255,255,.1);
+  }
+  #progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--teal), var(--pink));
+    transition: width .1s;
+  }
+</style>
+</head>
+<body>
+
+<!-- OCEAN BG -->
+<div id="ocean-bg">
+  <div class="wave wave1"></div>
+  <div class="wave wave2"></div>
+  <div class="wave wave3"></div>
+</div>
+
+<!-- YT player (hidden) -->
+<div id="yt-player"></div>
+
+<!-- ════════════ TITLE SCREEN ════════════ -->
+<div class="screen" id="title-screen">
+  <div class="mermaid-deco">🧜‍♀️</div>
+  <div class="game-title">Putri Duyung<br>yang Sedang Bersedih</div>
+  <div class="game-subtitle">JKT48 Wota Rhythm</div>
+  <div class="keys-hint">
+    <div class="key-badge" id="demo-z">Z<span>OI</span></div>
+    <div class="key-badge" id="demo-x">X<span>HAI</span></div>
+  </div>
+  <div style="font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:-4px;">
+    Tekan Z &amp; X sesuai irama wota!
+  </div>
+  <button class="btn-start" id="btn-start">▶ MULAI GAME</button>
+  <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:4px;">ESC = Pause</div>
+</div>
+
+<!-- ════════════ GAME SCREEN ════════════ -->
+<div class="screen hidden" id="game-screen">
+  <div id="hud">
+    <div class="hud-block">
+      <div class="hud-label">Score</div>
+      <div class="hud-val" id="hud-score">0</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Combo</div>
+      <div class="hud-val hud-combo" id="hud-combo">0x</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Acc</div>
+      <div class="hud-val" id="hud-acc">100%</div>
+    </div>
+  </div>
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+  <div id="song-info">♪ Putri Duyung yang Sedang Bersedih – JKT48</div>
+
+  <div id="lanes-wrap">
+    <div class="lane" id="lane-z">
+      <div class="hit-zone"><div class="hit-ring" id="ring-z">Z</div></div>
+    </div>
+    <div class="lane" id="lane-x">
+      <div class="hit-zone"><div class="hit-ring" id="ring-x">X</div></div>
+    </div>
+  </div>
+
+  <div id="judgment"></div>
+  <div id="chant-display"></div>
+  <div id="health-wrap"><div id="health-bar"></div></div>
+</div>
+
+<!-- ════════════ RESULT SCREEN ════════════ -->
+<div class="screen hidden" id="result-screen">
+  <div class="result-title">🧜‍♀️ RESULT 🧜‍♀️</div>
+  <div class="rank-badge" id="rank-badge"></div>
+  <div class="result-table">
+    <div class="result-row">
+      <div class="result-item"><div class="lbl">Score</div><div class="val" id="res-score">0</div></div>
+      <div class="result-item"><div class="lbl">Max Combo</div><div class="val" id="res-combo">0</div></div>
+      <div class="result-item"><div class="lbl">Accuracy</div><div class="val" id="res-acc">0%</div></div>
+    </div>
+    <div class="result-row">
+      <div class="result-item"><div class="lbl">✨ Perfect</div><div class="val" id="res-perfect" style="color:var(--gold)">0</div></div>
+      <div class="result-item"><div class="lbl">💙 Great</div><div class="val" id="res-great" style="color:var(--teal)">0</div></div>
+      <div class="result-item"><div class="lbl">💚 Good</div><div class="val" id="res-good" style="color:#88ff88">0</div></div>
+      <div class="result-item"><div class="lbl">💔 Miss</div><div class="val" id="res-miss" style="color:#ff4444">0</div></div>
+    </div>
+  </div>
+  <button class="btn-start" id="btn-retry" style="background:linear-gradient(135deg,var(--teal),#00b5a0)">↺ MAIN LAGI</button>
+</div>
+
+<!-- PAUSE -->
+<div id="pause-overlay">
+  <div class="pause-title">⏸ PAUSE</div>
+  <button class="btn-start" id="btn-resume" style="background:linear-gradient(135deg,var(--teal),#00b5a0)">▶ LANJUT</button>
+  <button class="btn-start" id="btn-quit" style="background:linear-gradient(135deg,#555,#333);margin-top:-8px">✕ KELUAR</button>
+</div>
+
+<!-- COUNTDOWN -->
+<div id="countdown"><div id="countdown-num"></div></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  BEAT MAP  –  Key: "Z"=0, "X"=1
+//  Format: [time_ms, lane, chant_text]
+//  BPM ≈ 126 → beat = ~476ms
+//  Wota pattern: Oi-Oi / Hai-Hai / Sasa-Nande
+// ═══════════════════════════════════════════════
+const BPM = 126;
+const BEAT = 60000 / BPM;  // ~476ms
+
+function b(measure, beat_in_measure, subdivision=0) {
+  // measure 1-indexed, 4 beats per measure
+  return ((measure - 1) * 4 + (beat_in_measure - 1) + subdivision / 2) * BEAT + 1000;
+}
+
+// Typical JKT48 wota chant pattern for intro/verse/chorus
+// Z = left (OI), X = right (HAI)
+const BEATMAP = [];
+const chants = [
+  "OI OI!", "HAI HAI!", "OI HAI!", "SASA NANDE!", "OI OI OI!", "HAI HAI HAI!",
+  "PUTRI DUYUNG!", "JKT!", "YOSH!", "OI!!", "48!!"
+];
+
+function addBeat(time, lane, chant) {
+  BEATMAP.push({ time, lane, chant: chant || "", hit: false, spawned: false });
+}
+
+// ── INTRO (measure 1-4) – sparse ──
+for (let m = 1; m <= 4; m++) {
+  addBeat(b(m,1), 0, m===1?"OI!":"");
+  addBeat(b(m,3), 1, m===1?"HAI!":"");
+}
+
+// ── VERSE 1 (measure 5-12) – alternating Z X ──
+const verse1_chants = ["OI OI!", "HAI HAI!", "OI HAI!", "OI!", "HAI!", "OI OI OI!", "PUTRI~!", "OI OI!"];
+for (let m = 5; m <= 12; m++) {
+  const ci = m - 5;
+  addBeat(b(m,1), 0, verse1_chants[ci]);
+  addBeat(b(m,2), 1, "");
+  addBeat(b(m,3), 0, "");
+  addBeat(b(m,4), 1, "");
+}
+
+// ── PRE-CHORUS (measure 13-16) – faster ──
+for (let m = 13; m <= 16; m++) {
+  addBeat(b(m,1), 0, "OI!");
+  addBeat(b(m,1,1), 1, "");
+  addBeat(b(m,2), 0, "");
+  addBeat(b(m,2,1), 1, "HAI!");
+  addBeat(b(m,3), 0, "");
+  addBeat(b(m,3,1), 1, "");
+  addBeat(b(m,4), 0, "OI OI!");
+  addBeat(b(m,4,1), 1, "");
+}
+
+// ── CHORUS (measure 17-28) – dense wota ──
+const chorus_chants = [
+  "SASA NANDE!","OI OI!","JKT 48!","HAI HAI!","PUTRI DUYUNG!","OI!","YOSH!","HAI!",
+  "OI OI OI!","SASA!","NANDE!","48!"
+];
+for (let m = 17; m <= 28; m++) {
+  const ci = m - 17;
+  addBeat(b(m,1), 0, chorus_chants[ci]);
+  addBeat(b(m,1,1), 1, "");
+  addBeat(b(m,2), 1, "");
+  addBeat(b(m,2,1), 0, "");
+  addBeat(b(m,3), 0, "");
+  addBeat(b(m,3,1), 1, "");
+  addBeat(b(m,4), 1, "");
+  addBeat(b(m,4,1), 0, "");
+}
+
+// ── VERSE 2 (measure 29-36) ──
+for (let m = 29; m <= 36; m++) {
+  addBeat(b(m,1), m%2===0?0:1, "OI HAI!");
+  addBeat(b(m,2), m%2===0?1:0, "");
+  addBeat(b(m,3), 0, "");
+  addBeat(b(m,4), 1, "");
+}
+
+// ── BRIDGE (measure 37-40) – Z only triplet ──
+for (let m = 37; m <= 40; m++) {
+  addBeat(b(m,1), 0, "OI OI OI!");
+  addBeat(b(m,1,1), 0, "");
+  addBeat(b(m,2), 1, "HAI HAI!");
+  addBeat(b(m,2,1), 1, "");
+  addBeat(b(m,3), 0, "");
+  addBeat(b(m,4), 1, "YOSH!");
+}
+
+// ── CHORUS 2 (measure 41-56) – most intense ──
+for (let m = 41; m <= 56; m++) {
+  const alt = m % 2;
+  addBeat(b(m,1), alt, "OI OI!");
+  addBeat(b(m,1,1), 1-alt, "");
+  addBeat(b(m,2), alt, "");
+  addBeat(b(m,2,1), 1-alt, "HAI HAI!");
+  addBeat(b(m,3), alt, "");
+  addBeat(b(m,3,1), 1-alt, "");
+  addBeat(b(m,4), alt, "SASA NANDE!");
+  addBeat(b(m,4,1), 1-alt, "");
+}
+
+// ── OUTRO (measure 57-60) ──
+for (let m = 57; m <= 60; m++) {
+  addBeat(b(m,1), 0, "JKT!");
+  addBeat(b(m,3), 1, "48!!");
+}
+
+const SONG_DURATION = b(62,1); // end time
+
+// ═══════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════
+let state = 'title';
+let gameTime = 0;
+let lastFrame = 0;
+let animFrame = null;
+let paused = false;
+
+let score = 0;
+let combo = 0;
+let maxCombo = 0;
+let health = 100;
+let totalNotes = BEATMAP.length;
+let judgeCount = { perfect:0, great:0, good:0, miss:0 };
+
+const activeNotes = [];  // DOM elements currently on screen
+const FALL_DURATION = 1500;  // ms for note to travel
+const HIT_Y = 80 + 30;  // px from bottom to hit zone center
+const LANE_H_PX = () => document.querySelector('.lane').offsetHeight;
+
+// ═══════════════════════════════
+//  YOUTUBE API
+// ═══════════════════════════════
+let ytPlayer = null;
+let ytReady = false;
+let ytStarted = false;
+
+window.onYouTubeIframeAPIReady = function() {
+  ytPlayer = new YT.Player('yt-player', {
+    height: '1', width: '1',
+    videoId: '7KtttU9G5ps',
+    playerVars: { autoplay: 0, controls: 0, disablekb: 1, origin: window.location.origin },
+    events: {
+      onReady: () => { ytReady = true; },
+      onStateChange: (e) => {}
+    }
+  });
+};
+
+// Load YT API
+const ytScript = document.createElement('script');
+ytScript.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(ytScript);
+
+// ═══════════════════════════════
+//  OCEAN DECORATION
+// ═══════════════════════════════
+function initOcean() {
+  const bg = document.getElementById('ocean-bg');
+  // Bubbles
+  for (let i = 0; i < 30; i++) {
+    const d = document.createElement('div');
+    d.className = 'bub';
+    const size = 4 + Math.random() * 20;
+    d.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      bottom:${Math.random()*30}%;
+      animation-duration:${6+Math.random()*10}s;
+      animation-delay:-${Math.random()*10}s;
+    `;
+    bg.appendChild(d);
+  }
+  // Sparkles
+  for (let i = 0; i < 50; i++) {
+    const s = document.createElement('div');
+    s.className = 'spark';
+    const size = 2 + Math.random() * 4;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*70}%;
+      animation-duration:${1+Math.random()*3}s;
+      animation-delay:-${Math.random()*3}s;
+      background: ${Math.random()>.5 ? 'var(--teal)':'var(--pink)'};
+    `;
+    bg.appendChild(s);
+  }
+  // Fish
+  const fishEmoji = ['🐠','🐟','🐡','🦑','🐙'];
+  for (let i = 0; i < 4; i++) {
+    const f = document.createElement('div');
+    f.className = 'fish';
+    f.textContent = fishEmoji[Math.floor(Math.random()*fishEmoji.length)];
+    const topPct = 20 + Math.random() * 60;
+    const dur = 15 + Math.random() * 20;
+    f.style.cssText = `top:${topPct}%; animation-duration:${dur}s; animation-delay:-${Math.random()*dur}s;`;
+    bg.appendChild(f);
+  }
+}
+
+// ═══════════════════════════════
+//  COUNTDOWN → START
+// ═══════════════════════════════
+function startCountdown() {
+  const el = document.getElementById('countdown-num');
+  const steps = ['3','2','1','START!'];
+  let i = 0;
+  function next() {
+    if (i >= steps.length) { beginGame(); return; }
+    el.textContent = steps[i];
+    el.style.opacity = '1';
+    el.style.transform = 'scale(1.3)';
+    el.style.transition = 'none';
+    setTimeout(() => {
+      el.style.transition = 'opacity .4s, transform .4s';
+      el.style.opacity = '0';
+      el.style.transform = 'scale(0.7)';
+    }, 600);
+    i++;
+    setTimeout(next, 900);
+  }
+  next();
+}
+
+// ═══════════════════════════════
+//  BEGIN GAME
+// ═══════════════════════════════
+function beginGame() {
+  // reset state
+  score = 0; combo = 0; maxCombo = 0; health = 100;
+  judgeCount = { perfect:0, great:0, good:0, miss:0 };
+  gameTime = 0;
+  ytStarted = false;
+  BEATMAP.forEach(n => { n.hit = false; n.spawned = false; n.missed = false; });
+  activeNotes.length = 0;
+
+  // clear lanes
+  document.querySelectorAll('.lane').forEach(l => {
+    l.querySelectorAll('.note,.note-tail').forEach(n => n.remove());
+  });
+
+  updateHUD();
+  lastFrame = performance.now();
+  paused = false;
+
+  if (ytReady && ytPlayer) {
+    ytPlayer.seekTo(0);
+    ytPlayer.playVideo();
+  }
+  ytStarted = true;
+
+  cancelAnimationFrame(animFrame);
+  animFrame = requestAnimationFrame(gameLoop);
+}
+
+// ═══════════════════════════════
+//  GAME LOOP
+// ═══════════════════════════════
+function gameLoop(now) {
+  if (paused) return;
+  const dt = now - lastFrame;
+  lastFrame = now;
+  gameTime += dt;
+
+  // spawn notes
+  const spawnAhead = FALL_DURATION + 100;
+  BEATMAP.forEach(note => {
+    if (!note.spawned && !note.hit && gameTime + spawnAhead >= note.time) {
+      spawnNote(note);
+      note.spawned = true;
+    }
+  });
+
+  // move notes
+  const laneH = LANE_H_PX();
+  const hitBottom = HIT_Y;
+  const topY = -(28 + 10);
+
+  activeNotes.forEach((obj, idx) => {
+    const elapsed = gameTime - (obj.note.time - FALL_DURATION);
+    const progress = Math.max(0, Math.min(1, elapsed / FALL_DURATION));
+    const yFromTop = progress * (laneH - hitBottom - 14);
+    obj.el.style.top = yFromTop + 'px';
+    if (obj.tail) obj.tail.style.top = (yFromTop + 28) + 'px';
+  });
+
+  // check misses
+  for (let i = activeNotes.length - 1; i >= 0; i--) {
+    const obj = activeNotes[i];
+    if (!obj.note.hit && gameTime > obj.note.time + 180) {
+      missNote(obj);
+      obj.el.remove();
+      if (obj.tail) obj.tail.remove();
+      activeNotes.splice(i, 1);
+    }
+  }
+
+  // progress bar
+  document.getElementById('progress-fill').style.width =
+    Math.min(100, (gameTime / SONG_DURATION) * 100) + '%';
+
+  // end of song
+  if (gameTime >= SONG_DURATION) {
+    endGame();
+    return;
+  }
+
+  animFrame = requestAnimationFrame(gameLoop);
+}
+
+// ═══════════════════════════════
+//  SPAWN NOTE
+// ═══════════════════════════════
+function spawnNote(note) {
+  const lane = note.lane === 0
+    ? document.getElementById('lane-z')
+    : document.getElementById('lane-x');
+
+  const el = document.createElement('div');
+  el.className = `note note-${note.lane===0?'z':'x'}`;
+  el.textContent = note.lane === 0 ? 'Z' : 'X';
+  el.style.top = '-30px';
+  lane.appendChild(el);
+
+  activeNotes.push({ note, el, tail: null });
+}
+
+// ═══════════════════════════════
+//  HIT DETECTION
+// ═══════════════════════════════
+function tryHit(lane) {
+  const now = gameTime;
+  let best = null;
+  let bestDelta = Infinity;
+
+  for (const obj of activeNotes) {
+    if (obj.note.hit) continue;
+    if (obj.note.lane !== lane) continue;
+    const delta = Math.abs(now - obj.note.time);
+    if (delta < bestDelta && delta < 250) {
+      bestDelta = delta;
+      best = obj;
+    }
+  }
+
+  if (!best) {
+    // empty hit - small penalty
+    showJudgment('MISS', 'miss');
+    addHealth(-3);
+    shakeScreen();
+    return;
+  }
+
+  best.note.hit = true;
+  best.el.remove();
+  if (best.tail) best.tail.remove();
+  activeNotes.splice(activeNotes.indexOf(best), 1);
+
+  let judge, pts;
+  if (bestDelta < 50) {
+    judge = 'PERFECT'; pts = 300; judgeCount.perfect++;
+    combo++; addHealth(1);
+  } else if (bestDelta < 100) {
+    judge = 'GREAT'; pts = 200; judgeCount.great++;
+    combo++; addHealth(0.5);
+  } else if (bestDelta < 180) {
+    judge = 'GOOD'; pts = 100; judgeCount.good++;
+    combo++; addHealth(0);
+  } else {
+    judge = 'MISS'; pts = 0; judgeCount.miss++;
+    combo = 0; addHealth(-5);
+  }
+
+  const bonus = 1 + Math.floor(combo / 10) * 0.1;
+  score += Math.round(pts * bonus);
+  if (combo > maxCombo) maxCombo = combo;
+
+  showJudgment(judge, judge.toLowerCase());
+  spawnParticles(lane, judge);
+
+  if (best.note.chant) showChant(best.note.chant);
+
+  // ring flash
+  const ring = lane === 0
+    ? document.getElementById('ring-z')
+    : document.getElementById('ring-x');
+  ring.classList.add(lane===0?'active-z':'active-x');
+  setTimeout(() => ring.classList.remove('active-z','active-x'), 150);
+
+  updateHUD();
+}
+
+function missNote(obj) {
+  judgeCount.miss++;
+  combo = 0;
+  addHealth(-8);
+  showJudgment('MISS','miss');
+  shakeScreen();
+  updateHUD();
+}
+
+// ═══════════════════════════════
+//  HEALTH
+// ═══════════════════════════════
+function addHealth(delta) {
+  health = Math.max(0, Math.min(100, health + delta));
+  const bar = document.getElementById('health-bar');
+  bar.style.width = health + '%';
+  if (health < 30) {
+    bar.style.background = 'linear-gradient(90deg,#ff4444,#ff8800)';
+    bar.style.boxShadow = '0 0 10px #ff4444';
+  } else if (health < 60) {
+    bar.style.background = 'linear-gradient(90deg,#ffaa00,var(--teal))';
+    bar.style.boxShadow = '0 0 10px #ffaa00';
+  } else {
+    bar.style.background = 'linear-gradient(90deg,var(--teal),var(--pink))';
+    bar.style.boxShadow = '0 0 10px var(--teal)';
+  }
+  if (health <= 0) {
+    setTimeout(endGame, 200);
+  }
+}
+
+// ═══════════════════════════════
+//  HUD
+// ═══════════════════════════════
+function updateHUD() {
+  document.getElementById('hud-score').textContent = score.toLocaleString();
+  document.getElementById('hud-combo').textContent = combo + 'x';
+  const total = judgeCount.perfect + judgeCount.great + judgeCount.good + judgeCount.miss;
+  const acc = total > 0
+    ? Math.round((judgeCount.perfect*1 + judgeCount.great*.8 + judgeCount.good*.5) / total * 100)
+    : 100;
+  document.getElementById('hud-acc').textContent = acc + '%';
+}
+
+// ═══════════════════════════════
+//  JUDGMENT DISPLAY
+// ═══════════════════════════════
+let judgeTimer = null;
+function showJudgment(text, cls) {
+  const el = document.getElementById('judgment');
+  clearTimeout(judgeTimer);
+  el.className = `judge-${cls}`;
+  el.textContent = text;
+  el.style.opacity = '1';
+  el.style.transform = 'translate(-50%,-50%) scale(1.2)';
+  el.style.transition = 'none';
+  setTimeout(() => {
+    el.style.transition = 'opacity .4s, transform .4s';
+    el.style.opacity = '0';
+    el.style.transform = 'translate(-50%,-50%) scale(0.8)';
+  }, 10);
+  judgeTimer = setTimeout(() => { el.style.opacity = '0'; }, 500);
+}
+
+// ═══════════════════════════════
+//  CHANT DISPLAY
+// ═══════════════════════════════
+let chantTimer = null;
+function showChant(text) {
+  const el = document.getElementById('chant-display');
+  clearTimeout(chantTimer);
+  el.textContent = text;
+  el.style.opacity = '1';
+  chantTimer = setTimeout(() => { el.style.opacity = '0'; }, 600);
+}
+
+// ═══════════════════════════════
+//  PARTICLES
+// ═══════════════════════════════
+function spawnParticles(lane, judge) {
+  const ring = lane === 0
+    ? document.getElementById('ring-z')
+    : document.getElementById('ring-x');
+  const rect = ring.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const color = lane === 0 ? 'var(--teal)' : 'var(--pink)';
+  const count = judge === 'PERFECT' ? 12 : judge === 'GREAT' ? 8 : 4;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = (i / count) * Math.PI * 2;
+    const dist = 40 + Math.random() * 60;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 20;
+    const size = 4 + Math.random() * 8;
+    p.style.cssText = `
+      left:${cx}px; top:${cy}px;
+      width:${size}px; height:${size}px;
+      background:${color};
+      --dx:${dx}px; --dy:${dy}px;
+      box-shadow:0 0 6px ${color};
+      animation-duration:${0.4+Math.random()*.3}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+  }
+}
+
+// ═══════════════════════════════
+//  SCREEN SHAKE
+// ═══════════════════════════════
+let shakeTimer = null;
+function shakeScreen() {
+  const gs = document.getElementById('lanes-wrap');
+  clearTimeout(shakeTimer);
+  gs.style.transform = 'translateX(-50%) translateX(6px)';
+  setTimeout(() => gs.style.transform = 'translateX(-50%) translateX(-6px)', 60);
+  shakeTimer = setTimeout(() => gs.style.transform = 'translateX(-50%)', 120);
+}
+
+// ═══════════════════════════════
+//  END GAME
+// ═══════════════════════════════
+function endGame() {
+  cancelAnimationFrame(animFrame);
+  if (ytPlayer) ytPlayer.pauseVideo();
+  state = 'result';
+
+  const total = judgeCount.perfect + judgeCount.great + judgeCount.good + judgeCount.miss;
+  const acc = total > 0
+    ? Math.round((judgeCount.perfect*1 + judgeCount.great*.8 + judgeCount.good*.5) / total * 100)
+    : 100;
+
+  let rank, rankCls;
+  if (acc >= 95 && judgeCount.miss === 0) { rank='S'; rankCls='rank-S'; }
+  else if (acc >= 85) { rank='A'; rankCls='rank-A'; }
+  else if (acc >= 70) { rank='B'; rankCls='rank-B'; }
+  else if (acc >= 50) { rank='C'; rankCls='rank-C'; }
+  else { rank='D'; rankCls='rank-D'; }
+
+  document.getElementById('res-score').textContent   = score.toLocaleString();
+  document.getElementById('res-combo').textContent   = maxCombo + 'x';
+  document.getElementById('res-acc').textContent     = acc + '%';
+  document.getElementById('res-perfect').textContent = judgeCount.perfect;
+  document.getElementById('res-great').textContent   = judgeCount.great;
+  document.getElementById('res-good').textContent    = judgeCount.good;
+  document.getElementById('res-miss').textContent    = judgeCount.miss;
+
+  const rb = document.getElementById('rank-badge');
+  rb.className = 'rank-badge ' + rankCls;
+  rb.textContent = rank;
+
+  showScreen('result');
+}
+
+// ═══════════════════════════════
+//  SCREENS
+// ═══════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  const el = document.getElementById(name+'-screen');
+  if (el) el.classList.remove('hidden');
+}
+
+// ═══════════════════════════════
+//  INPUT
+// ═══════════════════════════════
+const keyState = { z: false, x: false };
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  const k = e.key.toLowerCase();
+
+  if (state === 'title' && (k === 'enter' || k === ' ')) {
+    document.getElementById('btn-start').click();
+    return;
+  }
+
+  if (state === 'game' && !paused) {
+    if (k === 'z') {
+      keyState.z = true;
+      tryHit(0);
+      document.getElementById('demo-z')?.classList.add('active-z');
+    }
+    if (k === 'x') {
+      keyState.x = true;
+      tryHit(1);
+      document.getElementById('demo-x')?.classList.add('active-x');
+    }
+  }
+
+  if (k === 'escape') {
+    if (state === 'game') togglePause();
+  }
+});
+
+document.addEventListener('keyup', e => {
+  const k = e.key.toLowerCase();
+  if (k === 'z') { keyState.z = false; document.getElementById('ring-z').classList.remove('active-z'); }
+  if (k === 'x') { keyState.x = false; document.getElementById('ring-x').classList.remove('active-x'); }
+});
+
+// ═══════════════════════════════
+//  PAUSE
+// ═══════════════════════════════
+function togglePause() {
+  paused = !paused;
+  document.getElementById('pause-overlay').classList.toggle('visible', paused);
+  if (paused) {
+    if (ytPlayer) ytPlayer.pauseVideo();
+  } else {
+    if (ytPlayer) ytPlayer.playVideo();
+    lastFrame = performance.now();
+    animFrame = requestAnimationFrame(gameLoop);
+  }
+}
+
+// ═══════════════════════════════
+//  BUTTONS
+// ═══════════════════════════════
+document.getElementById('btn-start').addEventListener('click', () => {
+  state = 'game';
+  showScreen('game');
+  startCountdown();
+});
+
+document.getElementById('btn-retry').addEventListener('click', () => {
+  state = 'game';
+  showScreen('game');
+  startCountdown();
+});
+
+document.getElementById('btn-resume').addEventListener('click', () => {
+  togglePause();
+});
+
+document.getElementById('btn-quit').addEventListener('click', () => {
+  paused = false;
+  cancelAnimationFrame(animFrame);
+  if (ytPlayer) ytPlayer.pauseVideo();
+  document.getElementById('pause-overlay').classList.remove('visible');
+  state = 'title';
+  showScreen('title');
+});
+
+// ═══════════════════════════════
+//  INIT
+// ═══════════════════════════════
+initOcean();
+showScreen('title');
+state = 'title';
+
+// Title key animation demo
+setInterval(() => {
+  if (state !== 'title') return;
+  const r = Math.random() > .5;
+  const el = document.getElementById(r ? 'demo-z' : 'demo-x');
+  if (!el) return;
+  el.style.background = r
+    ? 'rgba(0,229,200,.3)'
+    : 'rgba(255,79,163,.3)';
+  el.style.transform = 'scale(1.15)';
+  el.style.borderColor = r ? 'var(--teal)' : 'var(--pink)';
+  el.style.boxShadow = `0 0 20px ${r?'var(--teal)':'var(--pink)'}`;
+  el.style.transition = 'all .08s';
+  setTimeout(() => {
+    el.style.background = '';
+    el.style.transform = '';
+    el.style.borderColor = '';
+    el.style.boxShadow = '';
+  }, 200);
+}, 500 + Math.random() * 400);
+</script>
+</body>
+</html>
